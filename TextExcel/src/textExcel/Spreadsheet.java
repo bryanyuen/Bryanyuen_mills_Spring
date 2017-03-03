@@ -4,6 +4,11 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
+	public Spreadsheet(int inputRows, int inputCols){
+		int rows = inputRows;
+		int cols = inputCols;
+		Cell [][] arr = new Cell [rows][cols];
+	}
 
 	@Override
 	public String processCommand(String command)

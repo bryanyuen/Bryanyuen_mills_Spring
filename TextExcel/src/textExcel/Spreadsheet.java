@@ -4,10 +4,10 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
+	private Cell [][] cells = new Cell[20][12];
 	public Spreadsheet(){
-	Cell [][] cells = new Cell[row][col];
 		for (int i = 0; i < cells.length; i++){
-			for (int j = 0; j < cells[1].length; j++){
+			for (int j = 0; j < cells[i].length; j++){
 			cells[i][j] = new EmptyCell();
 		}
 		}
@@ -18,7 +18,16 @@ public class Spreadsheet implements Grid
 	@Override
 	public String processCommand(String command)
 	{
-		this.command = command;
+		if (command.equals("")){
+			return command;
+		}
+		if(command.toUpperCase().equals("CLEAR")){
+			for(int i =0; i < cells.length; i++){
+				for(int j = 0; j < cells[i].length; j++){
+					cells[i][j] = new EmptyCell();
+				}
+			}
+		}
 		return this.command;
 	}
 

@@ -7,23 +7,19 @@ public class TextCell implements Cell {
 	}
 	@Override
 	public String abbreviatedCellText(){
+		if(text.length() < 10){
+			int numOfSpace = 10 - text.length();
+			for(int i = 0; i < numOfSpace; i++){
+				this.text += " ";
+			}
+		}else if(text.length() > 10){
+			this.text = text.substring(0, 11);
+		}else{ 
+			this.text = text;
+		}
 		return this.text;
-	}
-
-	@Override
+		}
 	public String fullCellText() {
-		// TODO Auto-generated method stub
-		return this.text;
-	}
-	public String padToTen(){
-		int numOfSpace = 10 - text.length();
-		for(int i = 0; i < numOfSpace; i++){
-			this.text += " ";
-		}
-		return this.text;
-		}
-	public String truncate(){
-		this.text = text.substring(0, 11);
-		return this.text;
+		return text;
 	}
 }

@@ -4,6 +4,9 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
+	private int row = 20;
+	private int col = 12;
+	private String command;
 	private Cell [][] cells = new Cell[20][12];
 	public Spreadsheet(){
 		for (int i = 0; i < cells.length; i++){
@@ -12,9 +15,6 @@ public class Spreadsheet implements Grid
 		}
 		}
 	}
-	private int row = 20;
-	private int col = 12;
-	private String command;
 	@Override
 	public String processCommand(String command)
 	{
@@ -27,6 +27,9 @@ public class Spreadsheet implements Grid
 					cells[i][j] = new EmptyCell();
 				}
 			}
+		}
+		if(command.substring(0, 5).toUpperCase().equals("CLEAR") && command.charAt(5) >='A' && command.charAt(6)>=1){
+			cells[command.charAt(6)-1][command.charAt(5)-65] = new EmptyCell();
 		}
 		return this.command;
 	}
@@ -53,6 +56,32 @@ public class Spreadsheet implements Grid
 	@Override
 	public String getGridText()
 	{
-		return null;
-}
+		cells = new EmptyCell[20][12];
+		String Grid = ""; 
+		String topLetter = "   |";
+		for(char i = 'A'; i<='L'; i++){
+			topLetter += i + "         |";
+		}
+		
+		String numbers = "\n";
+		for(int i = 0;i < 20;i++){
+			if(i<9){
+				numbers += (i+1);
+				numbers += "  |";
+				for(int j = 0; j<12;j++){
+					numbers += cells[i][j].abbreviatedCellText() + "|";
+				}
+				numbers +="\n";
+			}else{
+				numbers += (i+1);
+				numbers += " |";
+				for(int j = 0; j<12;j++){
+					numbers += cells[i][j].abbreviatedCellText() + "|";
+				}
+				numbers +="\n";
+			}
+		}
+		Grid = topLetter + numbers;
+		return Grid;
+	}
 }

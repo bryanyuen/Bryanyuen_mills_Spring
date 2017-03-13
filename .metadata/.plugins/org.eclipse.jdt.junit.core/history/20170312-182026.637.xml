@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="A_Checkpoint1" project="TextExcel" tests="5" started="5" failures="0" errors="0" ignored="0">
+  <testsuite name="textExcel.TestsALL.A_Checkpoint1" time="0.0">
+    <testcase name="testGetCols" classname="textExcel.TestsALL.A_Checkpoint1" time="0.0"/>
+    <testcase name="testGetRows" classname="textExcel.TestsALL.A_Checkpoint1" time="0.0"/>
+    <testcase name="testProcessCommand" classname="textExcel.TestsALL.A_Checkpoint1" time="0.0"/>
+    <testcase name="testProcessCommandNonliteralEmpty" classname="textExcel.TestsALL.A_Checkpoint1" time="0.0"/>
+    <testcase name="testLongShortStringCell" classname="textExcel.TestsALL.A_Checkpoint1" time="0.0"/>
+  </testsuite>
+</testrun>

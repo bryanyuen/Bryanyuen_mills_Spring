@@ -1,0 +1,87 @@
+package textExcel;
+
+// Update this file with your own code.
+
+public class Spreadsheet implements Grid
+{
+	private int row = 20;
+	private int col = 12;
+	private String command;
+	private Cell [][] cells = new Cell[20][12];
+	public Spreadsheet(){
+		for (int i = 0; i < cells.length; i++){
+			for (int j = 0; j < cells[i].length; j++){
+			cells[i][j] = new EmptyCell();
+		}
+		}
+	}
+	@Override
+	public String processCommand(String command)
+	{
+		if (command.equals("")){
+			return command;
+		}
+		if(command.toLowerCase().equals("clear")){
+			for(int i =0; i < cells.length; i++){
+				for(int j = 0; j < cells[i].length; j++){
+					cells[i][j] = new EmptyCell();
+				}
+			}
+		}
+		if(command.substring(0, 5).toLowerCase().equals("clear") && command.charAt(5) >='A' && command.charAt(6)>=1){
+			cells[command.charAt(6)-1][command.charAt(5)-65] = new EmptyCell();
+		}
+		return this.command;
+	}
+
+	@Override
+	public int getRows()
+	{
+		return this.row;
+	}
+
+	@Override
+	public int getCols()
+	{
+		return this.col;
+	}
+
+	@Override
+	public Cell getCell(Location loc)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getGridText()
+	{
+		cells = new EmptyCell[20][12];
+		String Grid = ""; 
+		String topLetter = "   |";
+		for(char i = 'A'; i<='L'; i++){
+			topLetter += i + "         |";
+		}
+		
+		String numbers = "\n";
+		for(int i = 0;i < 20;i++){
+			if(i<9){
+				numbers += (i+1);
+				numbers += "  |";
+				for(int j = 0; j<12;j++){
+					numbers += cells[i][j].abbreviatedCellText() + "|";
+				}
+				numbers +="\n";
+			}else{
+				numbers += (i+1);
+				numbers += " |";
+				for(int j = 0; j<12;j++){
+					numbers += cells[i][j].abbreviatedCellText() + "|";
+				}
+				numbers +="\n";
+			}
+		}
+		Grid = topLetter + numbers;
+		return Grid;
+	}
+}

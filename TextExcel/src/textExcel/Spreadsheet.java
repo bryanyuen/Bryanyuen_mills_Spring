@@ -7,7 +7,8 @@ public class Spreadsheet implements Grid
 	private int row = 20;
 	private int col = 12;
 	private String command;
-	private Cell [][] cells = new Cell[20][12];
+	private String text;
+	private Cell [][] cells = new EmptyCell[20][12];
 	public Spreadsheet(){
 		for (int i = 0; i < cells.length; i++){
 			for (int j = 0; j < cells[i].length; j++){
@@ -18,20 +19,35 @@ public class Spreadsheet implements Grid
 	@Override
 	public String processCommand(String command)
 	{
-		if (command.equals("")){
-			return command;
-		}
-		if(command.toUpperCase().equals("CLEAR")){
-			for(int i =0; i < cells.length; i++){
-				for(int j = 0; j < cells[i].length; j++){
-					cells[i][j] = new EmptyCell();
-				}
+		Location loc;
+		String [] Command = command.split(" ");
+		if(Command.length == 2&&Command[0].toLowerCase().equals("clear")){  		//clearing a particular cell (e.g., clear A1).
+			loc = new SpreadsheetLocation(Command[1]);
+			Cell input = new EmptyCell();
+			cells[loc.getRow()][loc.getCol()] = input;
+			return getGridText();
+		}else if(Command.length == 3){						//assignment to string values (e.g., A1 = "Hello").
+			loc = new SpreadsheetLocation(Command[0]); 
+			TextCell input = new TextCell(Command[2].substring(1, Command[2].length()-1));
+			cells[loc.getRow()][loc.getCol()] = input;
+			return getGridText();	
+		}else{
+			if(Command.length==1&&Command[0].toLowerCase().equals("clear")){  //clearing the entire sheet (e.g., clear).
+				clear();
+			}else{     			//cell inspection (e.g., A1). This should return the value at that cell
+				loc = new SpreadsheetLocation(Command[0]); 
+				String text = "\"" + cells[loc.getRow()][loc.getCol()].fullCellText() + "\"";
+			}
+		}	
+		return text;
+	}
+	public String clear(){
+		for(int i = 0; i < cells.length; i++){
+			for(int j = 0; j < cells[i].length; j++){
+				cells[i][j] = new EmptyCell();
 			}
 		}
-		if(command.substring(0, 5).toUpperCase().equals("CLEAR") && command.charAt(5) >='A' && command.charAt(6)>=1){
-			cells[command.charAt(6)-1][command.charAt(5)-65] = new EmptyCell();
-		}
-		return this.command;
+		return this.getGridText();
 	}
 
 	@Override
@@ -49,8 +65,9 @@ public class Spreadsheet implements Grid
 	@Override
 	public Cell getCell(Location loc)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		int row = loc.getRow();
+		int column = loc.getCol();
+		return cells[row][column];
 	}
 
 	@Override

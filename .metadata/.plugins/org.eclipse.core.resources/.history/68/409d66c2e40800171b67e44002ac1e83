@@ -4,7 +4,11 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
-	private Cell [][] cells = new Cell [this.getRows()][this.getCols()];
+	private int row = 20;
+	private int col = 12;
+	private String command;
+	private String text;
+	private Cell [][] cells = new EmptyCell[20][12];
 	public Spreadsheet(){
 		for (int i = 0; i < cells.length; i++){
 			for (int j = 0; j < cells[i].length; j++){
@@ -29,13 +33,13 @@ public class Spreadsheet implements Grid
 			return getGridText();	
 		}else{
 			if(Command.length==1&&Command[0].toLowerCase().equals("clear")){  //clearing the entire sheet (e.g., clear).
-				return clear();
+				clear();
 			}else{     			//cell inspection (e.g., A1). This should return the value at that cell
 				loc = new SpreadsheetLocation(Command[0]); 
 				String text = "\"" + cells[loc.getRow()][loc.getCol()].fullCellText() + "\"";
-				return text;
 			}
 		}	
+		return text;
 	}
 	public String clear(){
 		for(int i = 0; i < cells.length; i++){
@@ -49,13 +53,13 @@ public class Spreadsheet implements Grid
 	@Override
 	public int getRows()
 	{
-		return 20;
+		return this.row;
 	}
 
 	@Override
 	public int getCols()
 	{
-		return 12;
+		return this.col;
 	}
 
 	@Override
@@ -72,21 +76,17 @@ public class Spreadsheet implements Grid
 		cells = new EmptyCell[20][12];
 		String Grid = ""; 
 		String topLetter = "   |";
-		char start = 'A';
-		for(int col = 0; col < this.getCols(); col++){
-			topLetter += (char)(start + col) + "         |";
+		for(char i = 'A'; i<='L'; i++){
+			topLetter += i + "         |";
 		}
-		topLetter += "\n";
-		Grid += topLetter;
-		String rowHeader = "";
-		for(int i = 0;i < this.getRows();i++){
+		
+		String numbers = "\n";
+		for(int i = 0;i < 20;i++){
 			if(i<9){
-				rowHeader = ((i + 1) + "  |");
-			}else{ 
-				rowHeader = ((i + 1) + " |");
-				Grid += rowHeader;
-				for(int j = 0; j< this.getCols();j++){
-					String numbers += cells[i][j].abbreviatedCellText() + "|";
+				numbers += (i+1);
+				numbers += "  |";
+				for(int j = 0; j<12;j++){
+					numbers += cells[i][j].abbreviatedCellText() + "|";
 				}
 				numbers +="\n";
 			}else{

@@ -13,7 +13,7 @@ public class TextCell implements Cell {
 				this.text += " ";
 			}
 		}else if(text.length() > 10){
-			this.text = text.substring(0, 11);
+			this.text = text.substring(0, 10);
 		}else{ 
 			this.text = text;
 		}

@@ -16,12 +16,12 @@ public class Spreadsheet implements Grid
 	public String processCommand(String command)
 	{
 		Location loc;
-		String [] Command = command.split(" ");
+		String [] Command = command.split(" ",3);
 		if(Command.length == 2&&Command[0].toLowerCase().equals("clear")){  		//clearing a particular cell (e.g., clear A1).
 			clearCell(Command[1]);
 			return getGridText();
 		}else if(Command.length == 3){						//assignment to string values (e.g., A1 = "Hello").
-			assignValue(Command);
+			assignValue(Command[0],Command[2]);
 			return getGridText();	
 		}else{
 			if(Command.length==1&&Command[0].toLowerCase().equals("clear")){  //clearing the entire sheet (e.g., clear).
@@ -91,9 +91,9 @@ public class Spreadsheet implements Grid
 				}
 		return Grid;
 	}
-	public void assignValue(String[] cell){
-		SpreadsheetLocation loc = new SpreadsheetLocation(cell[0].toUpperCase());
-		cells[loc.getRow()][loc.getCol()] = new TextCell(cell[2]);
+	public void assignValue(String cell, String input){
+		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());
+		cells[loc.getRow()][loc.getCol()] = new TextCell(input.trim());
 	}
 	
 	public String inspectCell(String cell){

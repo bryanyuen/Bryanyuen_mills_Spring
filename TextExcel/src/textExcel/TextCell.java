@@ -5,19 +5,28 @@ public class TextCell implements Cell {
 	public TextCell(String text){
 		this.text = text;
 	}
+	public void setText(String input){
+		text = input;
+	}
 	@Override
 	public String abbreviatedCellText(){
-		if(text.length() < 10){
-			int numOfSpace = 10 - text.length();
-			for(int i = 0; i < numOfSpace; i++){
-				this.text += " ";
+		String realText = text;
+		if(text.charAt(0) == '\"'){
+			realText = text.substring(1, text.length() - 1);
+		}
+		if(text.length() > 10){
+			realText = text.substring(1, 11);
+			return realText;
+		}else{
+			//fills in the spaces
+			while(text.length()<10){
+				realText += " ";
+
 			}
-		}else if(text.length() >= 10){
-			this.text = text.substring(0, 10);
+			return realText;
 		}
-		return this.text;
-		}
+	}
 	public String fullCellText() {
-		return this.text;
+		return text;
 	}
 }

@@ -15,7 +15,6 @@ public class Spreadsheet implements Grid
 	@Override
 	public String processCommand(String command)
 	{
-		Location loc;
 		String [] Command = command.split(" ",3);
 		if(Command.length == 2&&Command[0].toLowerCase().equals("clear")){  		//clearing a particular cell (e.g., clear A1).
 			clearCell(Command[1]);
@@ -66,30 +65,29 @@ public class Spreadsheet implements Grid
 	@Override
 	public String getGridText()
 	{
-		String Grid = ""; 
 		String topLetter = "   |";
-		String rows = "";
-		char start = 'A';
-		for(int col = 0; col < this.getCols(); col++){
-			topLetter += (char)(start + col) + "         |";
+		for(char i = 'A'; i<='L'; i++){
+			topLetter += i + "         |";
 		}
-		topLetter += "\n";
-		Grid += topLetter;
-		String rowHeader = "";
-		for(int i = 0;i < this.getRows();i++){
+		String rows = "/n";
+		for(int i = 0;i < 20;i++){
 			if(i<9){
-				rowHeader = ((i + 1) + "  |");
-			}else{ 
-				rowHeader = ((i + 1) + " |");
-			}
-				Grid += rowHeader;
-				for(int j = 0; j< this.getCols();j++){
-					rows = cells[i][j].abbreviatedCellText() + "|";
+				rows += (i+1);
+				rows += "  |";
+				for(int j = 0; j<12;j++){
+					rows += cells[i][j].abbreviatedCellText() + "|";
 				}
 				rows +="\n";
-				Grid += rows;
+			}else{
+				rows += (i+1);
+				rows += " |";
+				for(int j = 0; j<12;j++){
+					rows += cells[i][j].abbreviatedCellText() + "|";
 				}
-		return Grid;
+				rows +="\n";
+			}
+		}
+		return topLetter + rows;
 	}
 	public void assignValue(String cell, String input){
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());

@@ -2,8 +2,8 @@ package textExcel;
 
 public class TextCell implements Cell {
 	private String text;
-	public TextCell(String str){
-		this.text = str;
+	public TextCell(String text){
+		this.text = text;
 	}
 	public void setText(String input){
 		text = input;
@@ -14,12 +14,12 @@ public class TextCell implements Cell {
 		if(text.charAt(0) == '\"'){
 			realText = text.substring(1, text.length() - 1);
 		}
-		if(realText.length() > 10){
+		if(text.length() > 10){
 			realText = text.substring(1, 11);
 			return realText;
 		}else{
 			//fills in the spaces
-			while(realText.length()<10){
+			while(text.length()<10){
 				realText += " ";
 
 			}

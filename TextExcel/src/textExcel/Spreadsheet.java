@@ -69,25 +69,25 @@ public class Spreadsheet implements Grid
 		for(char i = 'A'; i<='L'; i++){
 			topLetter += i + "         |";
 		}
-		String rows = "/n";
+		String numbers = "\n";
 		for(int i = 0;i < 20;i++){
 			if(i<9){
-				rows += (i+1);
-				rows += "  |";
+				numbers += (i+1);
+				numbers += "  |";
 				for(int j = 0; j<12;j++){
-					rows += cells[i][j].abbreviatedCellText() + "|";
+					numbers += cells[i][j].abbreviatedCellText() + "|";
 				}
-				rows +="\n";
+				numbers +="\n";
 			}else{
-				rows += (i+1);
-				rows += " |";
+				numbers += (i+1);
+				numbers += " |";
 				for(int j = 0; j<12;j++){
-					rows += cells[i][j].abbreviatedCellText() + "|";
+					numbers += cells[i][j].abbreviatedCellText() + "|";
 				}
-				rows +="\n";
+				numbers +="\n";
 			}
 		}
-		return topLetter + rows;
+		return topLetter + numbers;
 	}
 	public void assignValue(String cell, String input){
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());

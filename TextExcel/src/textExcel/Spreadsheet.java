@@ -15,6 +15,7 @@ public class Spreadsheet implements Grid
 	@Override
 	public String processCommand(String command)
 	{
+		if(command.length() > 1){
 		String [] Command = command.split(" ",3);
 		if(Command.length == 2&&Command[0].toLowerCase().equals("clear")){  		//clearing a particular cell (e.g., clear A1).
 			clearCell(Command[1]);
@@ -29,7 +30,11 @@ public class Spreadsheet implements Grid
 			}else{     			//cell inspection (e.g., A1). This should return the value at that cell
 				return inspectCell(Command[0]);
 			}
-		}	
+		}
+		}else {
+			return command;
+		}
+		
 	}
 	public void clear(){
 		for(int i = 0; i < cells.length; i++){
@@ -91,7 +96,15 @@ public class Spreadsheet implements Grid
 	}
 	public void assignValue(String cell, String input){
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());
+		if (Double.parseDouble(input) > 1.0){
+			cells[loc.getRow()][loc.getCol()] = new ValueCell(input);
+		}else if(input.contains("%")){
+			cells[loc.getRow()][loc.getCol()] = new PercentCell(input);
+		}else if(input.contains("+") || input.contains("-") || input.contains("*") || input.contains("/")){
+			cells[loc.getRow()][loc.getCol()] = new FormulaCell(input);
+		}else{
 		cells[loc.getRow()][loc.getCol()] = new TextCell(input.trim());
+		}
 	}
 	
 	public String inspectCell(String cell){

@@ -1,0 +1,9 @@
+package textExcel;
+
+public class ValueCell extends RealCell implements Cell {
+	private double value;
+	public ValueCell(double input) {
+		super();	
+		}
+		
+	}

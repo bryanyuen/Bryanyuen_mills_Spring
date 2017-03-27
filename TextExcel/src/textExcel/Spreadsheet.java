@@ -96,14 +96,14 @@ public class Spreadsheet implements Grid
 	}
 	public void assignValue(String cell, String input){
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());
-		if (Double.parseDouble(input) > 1.0){
-			cells[loc.getRow()][loc.getCol()] = new ValueCell(input);
+		if(input.contains("\"")){
+			cells[loc.getRow()][loc.getCol()] = new TextCell(input.trim());
 		}else if(input.contains("%")){
 			cells[loc.getRow()][loc.getCol()] = new PercentCell(input);
-		}else if(input.contains("+") || input.contains("-") || input.contains("*") || input.contains("/")){
+		}else if(input.charAt(0) == '('){
 			cells[loc.getRow()][loc.getCol()] = new FormulaCell(input);
-		}else{
-		cells[loc.getRow()][loc.getCol()] = new TextCell(input.trim());
+		}else{ 
+			cells[loc.getRow()][loc.getCol()] = new ValueCell(input);
 		}
 	}
 	

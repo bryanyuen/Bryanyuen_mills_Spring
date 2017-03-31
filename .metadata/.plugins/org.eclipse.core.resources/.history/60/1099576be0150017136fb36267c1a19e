@@ -12,10 +12,10 @@ public class TextCell implements Cell {
 	public String abbreviatedCellText(){
 		String realText = text;
 		if(text.charAt(0) == '\"'){
-			realText = text.substring(0, text.length() - 1);
+			realText = text.substring(1, text.length() - 1);
 		}
 		if(realText.length() > 10){
-			realText = text.substring(0, 11);
+			realText = text.substring(1, 11);
 			return realText;
 		}else{
 			//fills in the spaces

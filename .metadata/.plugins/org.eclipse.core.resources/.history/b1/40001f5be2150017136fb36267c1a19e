@@ -26,7 +26,6 @@ public abstract class RealCell implements Cell {
 			return realText;
 		}
 	}
-	
 	@Override
 	public String fullCellText() {
 		return value;

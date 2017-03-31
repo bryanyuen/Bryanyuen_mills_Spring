@@ -9,7 +9,7 @@ public abstract class RealCell implements Cell {
 		value = input;
 	}
 	@Override
-	public String abbreviatedCellText() {
+	/*public String abbreviatedCellText() {
 		String realText = value;
 		if(value.charAt(0) == '\"'){
 			realText = value.substring(1, value.length() - 1);
@@ -26,8 +26,8 @@ public abstract class RealCell implements Cell {
 			return realText;
 		}
 	}
-	
-	@Override
+	*/
+	//@Override
 	public String fullCellText() {
 		return value;
 	}

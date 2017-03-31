@@ -5,19 +5,17 @@ public class FormulaCell extends RealCell implements Cell {
 private String [] equation;
 	public FormulaCell (String input) {
 		super(input);
-		
-	}
-	public String[] getFormula(){
 		String formula = this.fullCellText().substring(1, this.fullCellText().length()-1);
 		equation = formula.split(" ");
-		return equation;
 	}
 	public String abbreviatedCellText(){
-		String answer = Double.toString(calculate(0,0));
+		String answer = Double.toString(calculate(equation[0], equation[1], equation[2]));
 if (answer.length() > 10){
 	return answer.substring(0, 10);
 } else {
 	while (answer.length() != 10){
+		int diff = 10 - answer.length();
+		for(int i = 0; i < diff; i++)
 		answer += " ";
 	}
 }
@@ -27,22 +25,23 @@ return answer;
 		return super.fullCellText();
 	}
 	
-	public double calculate (String [] equation) {
+	public double calculate (int num) {
 		int position = 0;
+		num = equation.length;
 		double answer = 0.0;
 		if (position == equation.length){
 			return answer;
 		}else {
-			if (equation [position + 1].equals("+")){
+			if (equation[position + 1].equals("+")){
 				answer = getDoubleValue(equation[position]) + getDoubleValue(equation[position + 2]);//add
-			}else if (equation [position + 1].equals("-")){
+			}else if (equation[position + 1].equals("-")){
 				answer = getDoubleValue(equation[position]) - getDoubleValue(equation[position + 2]);//subtract
-			}else if (equation [position + 1].equals("*")){
+			}else if (equation[position + 1].equals("*")){
 				answer = getDoubleValue(equation[position]) * getDoubleValue(equation[position + 2]);//multiply
-			}else if (equation [position + 1].equals("/")){
+			}else if (equation[position + 1].equals("/")){
 				answer = getDoubleValue(equation[position]) / getDoubleValue(equation[position + 2]);//divide
 			}
-			calculate (position+3, answer); //recursion 
+			calculate (position + 3 ); //recursion 
 			return answer;
 		}
 	}

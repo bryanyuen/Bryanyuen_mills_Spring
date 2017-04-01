@@ -2,55 +2,117 @@ package textExcel;
 
 public class FormulaCell extends RealCell implements Cell {
 	
-private String [] equation;
-	public FormulaCell (String input) {
-		super(input);
-		String formula = this.fullCellText().substring(1, this.fullCellText().length()-1);
-		equation = formula.split(" ");
+	private Spreadsheet sheet;
+
+	public FormulaCell(String text, Spreadsheet sheet) {
+		this.sheet = sheet;
+		setValue(text);
 	}
-	public String abbreviatedCellText(){
-		String answer = Double.toString(calculate(equation[0], equation[1], equation[2]));
-if (answer.length() > 10){
-	return answer.substring(0, 10);
-} else {
-	while (answer.length() != 10){
-		int diff = 10 - answer.length();
-		for(int i = 0; i < diff; i++)
-		answer += " ";
-	}
-}
-return answer;
-}
-	public String fullCellText() {
-		return super.fullCellText();
-	}
-	
-	public double calculate (int num) {
-		int position = 0;
-		num = equation.length;
-		double answer = 0.0;
-		if (position == equation.length){
-			return answer;
-		}else {
-			if (equation[position + 1].equals("+")){
-				answer = getDoubleValue(equation[position]) + getDoubleValue(equation[position + 2]);//add
-			}else if (equation[position + 1].equals("-")){
-				answer = getDoubleValue(equation[position]) - getDoubleValue(equation[position + 2]);//subtract
-			}else if (equation[position + 1].equals("*")){
-				answer = getDoubleValue(equation[position]) * getDoubleValue(equation[position + 2]);//multiply
-			}else if (equation[position + 1].equals("/")){
-				answer = getDoubleValue(equation[position]) / getDoubleValue(equation[position + 2]);//divide
+
+	public double getDoubleValue() {
+
+		String value = this.getValue().substring(2, getValue().length() - 2);
+			String[] expression = value.trim().split(" ");
+			if (expression[0].toUpperCase().equals("SUM")) {
+				String[] range = expression[1].toUpperCase().split("-");
+				return sum(range[0], range[0], range[1]);
+			} else if (expression[0].toUpperCase().equals("AVG")) {
+				String[] range = expression[1].toUpperCase().split("-");
+				return sum(range[0], range[0], range[1]) / countRange(range[0], range[0], range[1]);
+			} else {
+				for (int i = 0; i < expression.length; i++) {
+					if (expression[i].toUpperCase().charAt(0) >= 'A' && expression[i].toUpperCase().charAt(0) <= 'L') {
+						SpreadsheetLocation loc = sheet.getLocation(expression[i].toUpperCase());
+						Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+						if (cell instanceof RealCell) {
+							expression[i] = ((RealCell) cell).getDoubleValue() + "";
+						} else {
+							expression[i] = "";
+						}
+					}
+				}
+				double standingValue = Double.parseDouble(expression[0]);
+				for (int i = 1; i < expression.length; i++) {
+					if (expression[i].equals("*"))
+						standingValue *= Double.parseDouble(expression[i + 1]);
+					else if (expression[i].equals("/"))
+						standingValue /= Double.parseDouble(expression[i + 1]);
+					else if (expression[i].equals("+"))
+						standingValue += Double.parseDouble(expression[i + 1]);
+					else if (expression[i].equals("-"))
+						standingValue -= Double.parseDouble(expression[i + 1]);
+				}
+				return standingValue;
 			}
-			calculate (position + 3 ); //recursion 
-			return answer;
+	}
+
+	public String abbreviatedCellText() {
+		String value = getDoubleValue() + "";
+		if (value.length() > 10) {
+			return value.substring(0, 10);
+		} else {
+			for (int i = value.length(); i < 10; i++) {
+				value += " ";
+			}
+			return value;
 		}
 	}
-	
-	public double getDoubleValue (String number) {
-		return Double.parseDouble(number);
+
+	public String fullCellText() {
+		return getValue();
 	}
-	
-	public String getType(){
-		return "FormulaCell";
+
+	public double sum(String locStart, String loc1, String loc2) {
+		if (loc1.equals(loc2)) {
+			SpreadsheetLocation loc = sheet.getLocation(loc2);
+			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+			if (cell instanceof RealCell) {
+				return ((RealCell) cell).getDoubleValue();
+			} else {
+				return 0.0;
+			}
+		} else if (loc1.substring(1).equals(loc2.substring(1))) {
+			SpreadsheetLocation loc = sheet.getLocation(loc1);
+			loc1 = ((char) (loc1.charAt(0) + 1)) + locStart.substring(1);
+			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+			if (cell instanceof RealCell) {
+				return ((RealCell) cell).getDoubleValue() + sum(locStart, loc1, loc2);
+			} else {
+				return sum(locStart, loc1, loc2);
+			}
+		} else {
+			SpreadsheetLocation loc = sheet.getLocation(loc1);
+			loc1 = loc1.substring(0, 1) + (Integer.parseInt(loc1.substring(1)) + 1);
+			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+			if (cell instanceof RealCell) {
+				return ((RealCell) cell).getDoubleValue() + sum(locStart, loc1, loc2);
+			} else {
+				return sum(locStart, loc1, loc2);
+			}
+		}
+
 	}
+
+	public double countRange(String locStart, String loc1, String loc2) {
+		SpreadsheetLocation loc = sheet.getLocation(loc1);
+		if (loc1.equals(loc2)) {
+			return 1;
+		} else if (loc1.substring(1).equals(loc2.substring(1))) {
+			loc1 = (char) (loc1.charAt(0) + 1) + locStart.substring(1);
+			if (sheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
+				return 1 + countRange(locStart,loc1, loc2);
+			} else {
+				return countRange(locStart,loc1, loc2);
+			}
+		} else {
+			loc1 = loc1.substring(0, 1) + (Integer.parseInt(loc1.substring(1)) + 1);
+			if (sheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
+				return 1 + countRange(locStart,loc1, loc2);
+			} else {
+				return countRange(locStart, loc1, loc2);
+			}
+
+		}
+	}
+
 }

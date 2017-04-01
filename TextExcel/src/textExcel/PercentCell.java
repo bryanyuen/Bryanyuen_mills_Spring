@@ -3,7 +3,6 @@ package textExcel;
 public class PercentCell extends RealCell implements Cell {
 	private String value;
 	public PercentCell(String command) {
-		super(command);
 		this.value = command;
 		// TODO Auto-generated constructor stub
 	}

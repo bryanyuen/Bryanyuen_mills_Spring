@@ -101,7 +101,7 @@ public class Spreadsheet implements Grid
 		}else if(input.contains("%")){
 			cells[loc.getRow()][loc.getCol()] = new PercentCell(input);
 		}else if(input.charAt(0) == '('){
-			cells[loc.getRow()][loc.getCol()] = new FormulaCell(input);
+			cells[loc.getRow()][loc.getCol()] = new FormulaCell(input, this);
 		}else{ 
 			cells[loc.getRow()][loc.getCol()] = new ValueCell(input);
 		}
@@ -111,4 +111,12 @@ public class Spreadsheet implements Grid
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase()); 
 		return getCell(loc).fullCellText();
 }
+	public Cell [][] getSheet() {
+		return this.cells;
+	}
+public SpreadsheetLocation getLocation(String command) {
+	SpreadsheetLocation loc = new SpreadsheetLocation(command);
+	return loc;
+}
+
 }

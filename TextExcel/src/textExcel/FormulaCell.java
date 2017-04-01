@@ -1,49 +1,10 @@
 package textExcel;
 
 public class FormulaCell extends RealCell implements Cell {
-	
-	private Spreadsheet sheet;
-
-	public FormulaCell(String text, Spreadsheet sheet) {
-		this.sheet = sheet;
+	private Spreadsheet spreadSheet;
+	public FormulaCell(String text, Spreadsheet spreadSheet) {
+		this.spreadSheet = spreadSheet;
 		setValue(text);
-	}
-
-	public double getDoubleValue() {
-
-		String value = this.getValue().substring(2, getValue().length() - 2);
-			String[] expression = value.trim().split(" ");
-			if (expression[0].toUpperCase().equals("SUM")) {
-				String[] range = expression[1].toUpperCase().split("-");
-				return sum(range[0], range[0], range[1]);
-			} else if (expression[0].toUpperCase().equals("AVG")) {
-				String[] range = expression[1].toUpperCase().split("-");
-				return sum(range[0], range[0], range[1]) / countRange(range[0], range[0], range[1]);
-			} else {
-				for (int i = 0; i < expression.length; i++) {
-					if (expression[i].toUpperCase().charAt(0) >= 'A' && expression[i].toUpperCase().charAt(0) <= 'L') {
-						SpreadsheetLocation loc = sheet.getLocation(expression[i].toUpperCase());
-						Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
-						if (cell instanceof RealCell) {
-							expression[i] = ((RealCell) cell).getDoubleValue() + "";
-						} else {
-							expression[i] = "";
-						}
-					}
-				}
-				double standingValue = Double.parseDouble(expression[0]);
-				for (int i = 1; i < expression.length; i++) {
-					if (expression[i].equals("*"))
-						standingValue *= Double.parseDouble(expression[i + 1]);
-					else if (expression[i].equals("/"))
-						standingValue /= Double.parseDouble(expression[i + 1]);
-					else if (expression[i].equals("+"))
-						standingValue += Double.parseDouble(expression[i + 1]);
-					else if (expression[i].equals("-"))
-						standingValue -= Double.parseDouble(expression[i + 1]);
-				}
-				return standingValue;
-			}
 	}
 
 	public String abbreviatedCellText() {
@@ -62,57 +23,94 @@ public class FormulaCell extends RealCell implements Cell {
 		return getValue();
 	}
 
-	public double sum(String locStart, String loc1, String loc2) {
-		if (loc1.equals(loc2)) {
-			SpreadsheetLocation loc = sheet.getLocation(loc2);
-			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+	public double sum(String locFirst, String locSecond, String locThird) { //used to find the sum of several cells
+		if (locSecond.equals(locThird)) {
+			SpreadsheetLocation location = spreadSheet.getLocation(locThird);
+			Cell cell = spreadSheet.getSheet()[location.getRow()][location.getCol()];
 			if (cell instanceof RealCell) {
 				return ((RealCell) cell).getDoubleValue();
 			} else {
 				return 0.0;
 			}
-		} else if (loc1.substring(1).equals(loc2.substring(1))) {
-			SpreadsheetLocation loc = sheet.getLocation(loc1);
-			loc1 = ((char) (loc1.charAt(0) + 1)) + locStart.substring(1);
-			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+		} else if (locSecond.substring(1).equals(locThird.substring(1))) {
+			SpreadsheetLocation loc = spreadSheet.getLocation(locSecond);
+			locSecond = ((char) (locSecond.charAt(0) + 1)) + locFirst.substring(1);
+			Cell cell = spreadSheet.getSheet()[loc.getRow()][loc.getCol()];
 			if (cell instanceof RealCell) {
-				return ((RealCell) cell).getDoubleValue() + sum(locStart, loc1, loc2);
+				return ((RealCell) cell).getDoubleValue() + sum(locFirst, locSecond, locThird);
 			} else {
-				return sum(locStart, loc1, loc2);
+				return sum(locFirst, locSecond, locThird);
 			}
 		} else {
-			SpreadsheetLocation loc = sheet.getLocation(loc1);
-			loc1 = loc1.substring(0, 1) + (Integer.parseInt(loc1.substring(1)) + 1);
-			Cell cell = sheet.getSheet()[loc.getRow()][loc.getCol()];
+			SpreadsheetLocation loc = spreadSheet.getLocation(locSecond);
+			locSecond = locSecond.substring(0, 1) + (Integer.parseInt(locSecond.substring(1)) + 1);
+			Cell cell = spreadSheet.getSheet()[loc.getRow()][loc.getCol()];
 			if (cell instanceof RealCell) {
-				return ((RealCell) cell).getDoubleValue() + sum(locStart, loc1, loc2);
+				return ((RealCell) cell).getDoubleValue() + sum(locFirst, locSecond, locThird);
 			} else {
-				return sum(locStart, loc1, loc2);
+				return sum(locFirst, locSecond, locThird);
 			}
 		}
 
 	}
 
-	public double countRange(String locStart, String loc1, String loc2) {
-		SpreadsheetLocation loc = sheet.getLocation(loc1);
-		if (loc1.equals(loc2)) {
+	public double countCell(String locFirst, String locSecond, String locThird) { //used to get the Value from cells
+		SpreadsheetLocation loc = spreadSheet.getLocation(locSecond);
+		if (locSecond.equals(locThird)) {
 			return 1;
-		} else if (loc1.substring(1).equals(loc2.substring(1))) {
-			loc1 = (char) (loc1.charAt(0) + 1) + locStart.substring(1);
-			if (sheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
-				return 1 + countRange(locStart,loc1, loc2);
+		} else if (locSecond.substring(1).equals(locThird.substring(1))) {
+			locSecond = (char) (locSecond.charAt(0) + 1) + locFirst.substring(1);
+			if (spreadSheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
+				return 1 + countCell(locFirst,locSecond, locThird);
 			} else {
-				return countRange(locStart,loc1, loc2);
+				return countCell(locFirst,locSecond, locThird);
 			}
 		} else {
-			loc1 = loc1.substring(0, 1) + (Integer.parseInt(loc1.substring(1)) + 1);
-			if (sheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
-				return 1 + countRange(locStart,loc1, loc2);
+			locSecond = locSecond.substring(0, 1) + (Integer.parseInt(locSecond.substring(1)) + 1);
+			if (spreadSheet.getSheet()[loc.getRow()][loc.getCol()] instanceof RealCell) {
+				return 1 + countCell(locFirst,locSecond, locThird);
 			} else {
-				return countRange(locStart, loc1, loc2);
+				return countCell(locFirst, locSecond, locThird);
 			}
 
 		}
+	}
+
+	public double getDoubleValue() { //used to get the value in double form
+
+		String formula = this.getValue().substring(2, getValue().length() - 2);
+			String[] equation = formula.trim().split(" ");
+			if (equation[0].toLowerCase().equals("sum")) {
+				String[] range = equation[1].toUpperCase().split("-");
+				return sum(range[0], range[0], range[1]);
+			} else if (equation[0].toLowerCase().equals("avg")) {
+				String[] range = equation[1].toUpperCase().split("-");
+				return sum(range[0], range[0], range[1]) / countCell(range[0], range[0], range[1]);
+			} else {
+				for (int i = 0; i < equation.length; i++) {
+					if (equation[i].toUpperCase().charAt(0) >= 'A' && equation[i].toUpperCase().charAt(0) <= 'L') {
+						SpreadsheetLocation loc = spreadSheet.getLocation(equation[i].toUpperCase());
+						Cell cell = spreadSheet.getSheet()[loc.getRow()][loc.getCol()];
+						if (cell instanceof RealCell) {
+							equation[i] = ((RealCell) cell).getDoubleValue() + "";
+						} else {
+							equation[i] = "";
+						}
+					}
+				}
+				double standingValue = Double.parseDouble(equation[0]);
+				for (int i = 1; i < equation.length; i++) {
+					if (equation[i].equals("*"))
+						standingValue *= Double.parseDouble(equation[i + 1]);
+					else if (equation[i].equals("/"))
+						standingValue /= Double.parseDouble(equation[i + 1]);
+					else if (equation[i].equals("+"))
+						standingValue += Double.parseDouble(equation[i + 1]);
+					else if (equation[i].equals("-"))
+						standingValue -= Double.parseDouble(equation[i + 1]);
+				}
+				return standingValue;
+			}
 	}
 
 }

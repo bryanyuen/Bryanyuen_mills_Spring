@@ -4,7 +4,7 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
-	private Cell [][] cells = new Cell [this.getRows()][this.getCols()];
+	private Cell [][] cells = new Cell [this.getRows()][this.getCols()]; //creating the grid
 	public Spreadsheet(){
 		for (int i = 0; i < cells.length; i++){
 			for (int j = 0; j < cells[i].length; j++){
@@ -36,31 +36,31 @@ public class Spreadsheet implements Grid
 		}
 		
 	}
-	public void clear(){
+	public void clear(){		//method that use to make a certain cell into empty cell
 		for(int i = 0; i < cells.length; i++){
 			for(int j = 0; j < cells[i].length; j++){
 				cells[i][j] = new EmptyCell();
 			}
 		}
 	}
-	public void clearCell(String location){
+	public void clearCell(String location){     	//method that make the whole list into empty cell
 		SpreadsheetLocation loc = new SpreadsheetLocation(location.toUpperCase());
 		cells[loc.getRow()][loc.getCol()] = new EmptyCell();
 	}
 	@Override
-	public int getRows()
+	public int getRows()		//row equals to 20
 	{
 		return 20;
 	}
 
 	@Override
-	public int getCols()
+	public int getCols()		//column equals to 12
 	{
 		return 12;
 	}
 
 	@Override
-	public Cell getCell(Location loc)
+	public Cell getCell(Location loc)		//get the type of the cell
 	{
 		int row = loc.getRow();
 		int column = loc.getCol();
@@ -68,7 +68,7 @@ public class Spreadsheet implements Grid
 	}
 
 	@Override
-	public String getGridText()
+	public String getGridText()		//Method that return the text in the cell
 	{
 		String topLetter = "   |";
 		for(char i = 'A'; i<='L'; i++){
@@ -94,7 +94,7 @@ public class Spreadsheet implements Grid
 		}
 		return topLetter + numbers;
 	}
-	public void assignValue(String cell, String input){
+	public void assignValue(String cell, String input){		//method that use to determine which cell it is
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase());
 		if(input.contains("\"")){
 			cells[loc.getRow()][loc.getCol()] = new TextCell(input.trim());
@@ -107,14 +107,14 @@ public class Spreadsheet implements Grid
 		}
 	}
 	
-	public String inspectCell(String cell){
+	public String inspectCell(String cell){			//method that return the context in the cell
 		SpreadsheetLocation loc = new SpreadsheetLocation(cell.toUpperCase()); 
 		return getCell(loc).fullCellText();
 }
-	public Cell [][] getSheet() {
+	public Cell [][] getSheet() {	
 		return this.cells;
 	}
-public SpreadsheetLocation getLocation(String command) {
+public SpreadsheetLocation getLocation(String command) {	//method that return the location of the cell
 	SpreadsheetLocation location = new SpreadsheetLocation(command);
 	return location;
 }
